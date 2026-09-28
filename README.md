@@ -13,11 +13,13 @@ name: `spmregpkg` (the image name stays `spm-test-pkg`; the suite's DUT-built ta
 `spmtestpkg`, so the two never collide). It installs as a host service and does nothing when started.
 
 ## Publish
-Push to `main` (or run the workflow by hand). GitHub Actions builds linux/amd64 and linux/arm64
-and pushes to GHCR with the repo's `GITHUB_TOKEN`; no personal token is needed.
+Push to `main` (or run the workflow by hand). GitHub Actions builds linux/amd64 and pushes to GHCR with the repo's `GITHUB_TOKEN`; no personal token is needed.
 
-**One-time:** new GHCR packages are private. After the first run, open
-Package settings → Change visibility → **Public**, so the DUT can pull anonymously.
+Images are published as **single-platform Docker v2 manifests** (linux/amd64, no attestations).
+spm's registry client only accepts that media type; a multi-arch or attested image is an OCI index
+and spm's manifest request gets `404 MANIFEST_UNKNOWN`. Do not add platforms or attestations.
+
+The package is public (it inherits the public repo's visibility), so the DUT pulls anonymously.
 
 ## Local build
 `./build.sh` builds `spm-test-pkg:1.0.0/1.1.0` into the local docker.
